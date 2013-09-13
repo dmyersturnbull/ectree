@@ -92,6 +92,45 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return true;
 	}
 
+	public NavigableSet<ECNode> findByDescriptionSubstring(String descriptionSubstring) {
+		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
+		for (ECNode node : this) {
+			if (node.getEcNumber() == null) {
+				if (descriptionSubstring == null) matches.add(node);
+			} else if (node.getDescription().contains(descriptionSubstring)) {
+				matches.add(node);
+			}
+		}
+		return matches;
+	}
+
+	public ECNode findByEcNumber(ECNumber ecNumber) {
+		for (ECNode node : this) {
+			if (node.getEcNumber() == null) {
+				if (ecNumber == null) return node;
+			} else if (node.getEcNumber().equals(ecNumber)) {
+				return node;
+			}
+		}
+		return null;
+	}
+
+	public ECNode findByEcNumber(String ecNumber) {
+		return findByEcNumber(new ECNumber(ecNumber));
+	}
+
+	public NavigableSet<ECNode> findByExactDescription(String description) {
+		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
+		for (ECNode node : this) {
+			if (node.getEcNumber() == null) {
+				if (description == null) matches.add(node);
+			} else if (node.getDescription().equals(description)) {
+				matches.add(node);
+			}
+		}
+		return matches;
+	}
+
 	public NavigableSet<ECNode> getChildren() {
 		return children;
 	}
@@ -139,6 +178,28 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 				visited.add(i.next());
 		}
 		return visited.iterator();
+	}
+
+	public void print() {
+		for (ECNode node : this) {
+			if (!node.isRoot()) {
+				for (int i = 1; i < node.getDepth(); i++)
+					System.out.print("\t");
+			}
+			System.out.println(node);
+		}
+	}
+
+	public void printBreadthFirst() {
+		Iterator<ECNode> iter = this.breadthFirst();
+		while (iter.hasNext()) {
+			ECNode node = iter.next();
+			if (!node.isRoot()) {
+				for (int i = 1; i < node.getDepth(); i++)
+					System.out.print("\t");
+				System.out.println(node);
+			}
+		}
 	}
 
 	protected void setChildren(NavigableSet<ECNode> children) {

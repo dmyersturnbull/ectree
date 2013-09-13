@@ -48,47 +48,24 @@ public class ECTree implements Iterable<ECNode> {
 	}
 
 	public NavigableSet<ECNode> findByDescriptionSubstring(String descriptionSubstring) {
-		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
-		for (ECNode node : root) {
-			if (node.getEcNumber() == null) {
-				if (descriptionSubstring == null) matches.add(node);
-			} else if (node.getDescription().contains(descriptionSubstring)) {
-				matches.add(node);
-			}
-		}
-		return matches;
+		return root.findByDescriptionSubstring(descriptionSubstring);
 	}
 
 	public ECNode findByEcNumber(ECNumber ecNumber) {
-		for (ECNode node : root) {
-			if (node.getEcNumber() == null) {
-				if (ecNumber == null) return node;
-			} else if (node.getEcNumber().equals(ecNumber)) {
-				return node;
-			}
-		}
-		return null;
+		return root.findByEcNumber(ecNumber);
 	}
 
 	public ECNode findByEcNumber(String ecNumber) {
-		return findByEcNumber(new ECNumber(ecNumber));
+		return root.findByEcNumber(ecNumber);
 	}
 
 	public NavigableSet<ECNode> findByExactDescription(String description) {
-		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
-		for (ECNode node : root) {
-			if (node.getEcNumber() == null) {
-				if (description == null) matches.add(node);
-			} else if (node.getDescription().equals(description)) {
-				matches.add(node);
-			}
-		}
-		return matches;
+		return root.findByExactDescription(description);
 	}
 
 	public NavigableSet<ECNode> findNodesOfDepth(int depth) {
 		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
-		Iterator<ECNode> iter = root.breadthFirst();
+		Iterator<ECNode> iter = this.breadthFirst();
 		while (iter.hasNext()) {
 			ECNode node = iter.next();
 			if (node.getDepth() == depth) matches.add(node);
@@ -111,24 +88,11 @@ public class ECTree implements Iterable<ECNode> {
 	}
 
 	public void print() {
-		for (ECNode node : root) {
-			if (!node.isRoot()) {
-				for (int i = 1; i < node.getDepth(); i++) System.out.print("\t");
-			}
-			System.out.println(node);
-		}
+		root.print();
 	}
 
 	public void printBreadthFirst() {
-		Iterator<ECNode> iter = root.breadthFirst();
-		while (iter.hasNext()) {
-			ECNode node = iter.next();
-			if (!node.isRoot()) {
-				for (int i = 1; i < node.getDepth(); i++)
-					System.out.print("\t");
-				System.out.println(node);
-			}
-		}
+		root.printBreadthFirst();
 	}
 
 	public void setRoot(ECNode root) {
