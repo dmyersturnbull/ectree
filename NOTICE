@@ -1,0 +1,12 @@
+Enzyme classification tree structure
+Copyright 2013 Douglas Myers-Turnbull
+
+This software uses Junit (http://junit.org/), XMLUnit
+(http://xmlunit.sourceforge.net/), and Mockito
+(http://code.google.com/p/mockito/) for testing. JUnit is distributed under the
+Common Public License. Mockito is distributed under the MIT License. XMLUnit is
+provided under an open source license by Jeff Martin and Tim Bacon.
+
+This software also uses log4J (http://logging.apache.org/log4j/) and SL4J
+(http://http://www.slf4j.org/) for logging. Log4J is distributed under the
+Apache License, and SL4J under the MIT License.
