@@ -1,5 +1,8 @@
-Enzyme classification tree structure
+Enzyme commission tree structure (ECTree)
 Copyright 2013 Douglas Myers-Turnbull
+
+An Enzyme Commission database text file is provided by Expasy
+(http://www.expasy.org/) at the Swiss Institute of Bioinformatics (http://www.isb-sib.ch/).
 
 This software uses Junit (http://junit.org/), XMLUnit
 (http://xmlunit.sourceforge.net/), and Mockito

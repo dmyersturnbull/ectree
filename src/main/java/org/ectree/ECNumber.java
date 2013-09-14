@@ -20,10 +20,19 @@ public class ECNumber {
 
 	private final int[] codes;
 
+	/**
+	 * @param codes
+	 *            EC number components from left to right, so that
+	 *            {@code codes[0]} is the top-level EC code
+	 */
 	public ECNumber(int[] codes) {
 		this.codes = codes;
 	}
 
+	/**
+	 * @param code
+	 *            A string formatted as "x.x.x.x"; for example "1" or "3.4.5"
+	 */
 	public ECNumber(String code) {
 		String[] parts = code.split("\\.");
 		codes = new int[parts.length];
@@ -46,14 +55,24 @@ public class ECNumber {
 		return true;
 	}
 
+	/**
+	 * Returns the EC number component corresponding to depth {@code depth}.
+	 */
 	public int getCodeAtDepth(int depth) {
 		return codes[depth - 1];
 	}
 
+	/**
+	 * Returns the depth of this number. Depth is defined such that only the
+	 * root has depth 0, and its children (top-level EC codes) have depth 1.
+	 */
 	public int getDepth() {
 		return codes.length;
 	}
 
+	/**
+	 * Returns the EC number this ECNumber's parent is expected to have.
+	 */
 	public ECNumber getParentNumber() {
 		int[] p = new int[codes.length - 1];
 		for (int i = 0; i < codes.length - 1; i++)
@@ -69,6 +88,10 @@ public class ECNumber {
 		return result;
 	}
 
+	/**
+	 * Returns a natural representation of this EC number, such as "1" or
+	 * "3.4.5".
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

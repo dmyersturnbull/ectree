@@ -23,6 +23,19 @@ import java.util.NavigableSet;
 import java.util.Queue;
 import java.util.TreeSet;
 
+/**
+ * A node of an {@link ECTree}. Contains a {@link #getEcNumber() Enzyme
+ * Commission number}, a {@link #getDescription() text description}, a
+ * {@link #getParent() parent}, and any number of {@link #getChildren()
+ * children}. This node is defined at a particular {@link #getDepth() depth} on
+ * the tree, which is the number of edges to the root.
+ * 
+ * The ECNode class implements the {@link Iterable} interface. Iteration is
+ * performed {@link #inOrder() in-order} over nodes in the subtree rooted at
+ * this ECNode.
+ * 
+ * @author dmyersturnbull
+ */
 public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 
 	private NavigableSet<ECNode> children;
@@ -41,6 +54,10 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return children.add(e);
 	}
 
+	/**
+	 * Returns a breadth-first iterator over ECNodes in the subtree rooted at
+	 * this node.
+	 */
 	public Iterator<ECNode> breadthFirst() {
 		List<ECNode> visited = new ArrayList<>();
 		Queue<ECNode> queue = new ArrayDeque<>();
@@ -55,6 +72,10 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return visited.iterator();
 	}
 
+	/**
+	 * Returns true if {@code second} comes before this node in an
+	 * {@link #inOrder() in-order} traversal.
+	 */
 	@Override
 	public int compareTo(ECNode second) {
 		if (this.equals(second)) return 0;
@@ -69,6 +90,10 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return -1;
 	}
 
+	/**
+	 * Returns a depth-first iterator over ECNodes in the subtree rooted at this
+	 * node.
+	 */
 	public Iterator<ECNode> depthFirst() {
 		LinkedHashSet<ECNode> visited = new LinkedHashSet<>();
 		for (ECNode child : children) {
@@ -80,6 +105,13 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return visited.iterator();
 	}
 
+	/**
+	 * Returns true if {@code obj} is an ECNode that has this Node's
+	 * {@link #getEcNumber() EC number}. Note that this may return true for
+	 * Nodes from different trees even if the {@link #getDescription()
+	 * descriptions}, {@link #getParent() parents}, or {@link #getChildren()
+	 * children} differ.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -92,6 +124,15 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return true;
 	}
 
+	/**
+	 * Searches the subtree rooted at this ECNode for every ECNode whose
+	 * description contains {@code descriptionSubstring} as a substring,
+	 * ignoring case.
+	 * 
+	 * @param description
+	 *            A case-insensitive query string
+	 * @return A sorted set of ECNodes matching the query
+	 */
 	public NavigableSet<ECNode> findByDescriptionSubstring(String descriptionSubstring) {
 		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
 		for (ECNode node : this) {
@@ -104,6 +145,10 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return matches;
 	}
 
+	/**
+	 * Searches the subtree rooted at this ECNode for the unique ECNode with EC
+	 * number {@code ecNumber}.
+	 */
 	public ECNode findByEcNumber(ECNumber ecNumber) {
 		for (ECNode node : this) {
 			if (node.getEcNumber() == null) {
@@ -115,16 +160,28 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return null;
 	}
 
+	/**
+	 * Searches the subtree rooted at this ECNode for the unique ECNode with EC
+	 * number {@code ecNumber}.
+	 */
 	public ECNode findByEcNumber(String ecNumber) {
 		return findByEcNumber(new ECNumber(ecNumber));
 	}
 
+	/**
+	 * Searches the subtree rooted at this ECNode for every ECNode whose
+	 * description contains {@code descriptionSubstring}, ignoring case.
+	 * 
+	 * @param description
+	 *            A case-insensitive query string
+	 * @return A sorted set of ECNodes matching the query
+	 */
 	public NavigableSet<ECNode> findByExactDescription(String description) {
 		NavigableSet<ECNode> matches = new TreeSet<ECNode>();
 		for (ECNode node : this) {
 			if (node.getEcNumber() == null) {
 				if (description == null) matches.add(node);
-			} else if (node.getDescription().equals(description)) {
+			} else if (node.getDescription().equalsIgnoreCase(description)) {
 				matches.add(node);
 			}
 		}
@@ -135,11 +192,22 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return children;
 	}
 
+	/**
+	 * Returns the depth of this ECNode. Depth is defined such that only the
+	 * root has depth 0, and its children (top-level EC codes) have depth 1.
+	 */
 	public int getDepth() {
 		if (isRoot()) return 0;
 		return ecNumber.getDepth();
 	}
 
+	/**
+	 * Returns the text description of this node. For example:
+	 * 
+	 * <pre>
+	 * With a quinone or similar compound as acceptor.
+	 * </pre>
+	 */
 	public String getDescription() {
 		return description;
 	}
@@ -160,40 +228,43 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		return result;
 	}
 
-	public boolean isRoot() {
-		return ecNumber == null;
-	}
-
-	@Override
-	public Iterator<ECNode> iterator() {
-		return listOrder();
-	}
-
-	public Iterator<ECNode> listOrder() {
+	/**
+	 * Returns an in-order iterator over ECNodes in the subtree rooted at this
+	 * node. For example:
+	 * 
+	 * <pre>
+	 * 1, 1.1, 1.1.1, 1.1.2, 1.2, 1.2.1, 1.2.2, 1.2, 1.2.1, 2, 2.1, 2.1.1, ...
+	 * </pre>
+	 */
+	public Iterator<ECNode> inOrder() {
 		List<ECNode> visited = new ArrayList<>();
 		visited.add(this);
 		for (ECNode child : children) {
-			Iterator<ECNode> i = child.listOrder();
+			Iterator<ECNode> i = child.inOrder();
 			while (i.hasNext())
 				visited.add(i.next());
 		}
 		return visited.iterator();
 	}
 
-	public void print() {
-		for (ECNode node : this) {
-			if (!node.isRoot()) {
-				for (int i = 1; i < node.getDepth(); i++)
-					System.out.print("\t");
-			}
-			System.out.println(node);
-		}
+	public boolean isRoot() {
+		return ecNumber == null;
 	}
 
-	public void printBreadthFirst() {
-		Iterator<ECNode> iter = this.breadthFirst();
-		while (iter.hasNext()) {
-			ECNode node = iter.next();
+	/**
+	 * Iterates {@link #inOrder() in-order}.
+	 */
+	@Override
+	public Iterator<ECNode> iterator() {
+		return inOrder();
+	}
+
+	/**
+	 * Prints an {@link #inOrder() in-order} representation of the subtree
+	 * rooted at this node.
+	 */
+	public void print() {
+		for (ECNode node : this) {
 			if (!node.isRoot()) {
 				for (int i = 1; i < node.getDepth(); i++)
 					System.out.print("\t");
@@ -210,6 +281,13 @@ public class ECNode implements Iterable<ECNode>, Comparable<ECNode> {
 		this.parent = parent;
 	}
 
+	/**
+	 * Prints a string formatted as:
+	 * 
+	 * <pre>
+	 * ecNumber: description
+	 * </pre>
+	 */
 	@Override
 	public String toString() {
 		return ecNumber + ": " + description;

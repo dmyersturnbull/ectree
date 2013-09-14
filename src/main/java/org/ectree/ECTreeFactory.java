@@ -28,9 +28,18 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A collection of factory methods for {@link ECTree ECTrees}. Contains methods
+ * for creating ECTrees from text files provided by the ENZYME nomenclature
+ * database at the <a href="http://www.isb-sib.ch/">Swiss Institute of
+ * Bioinformatics (SIB)</a>. An example of the file can be found at <a
+ * href="ftp://ftp.expasy.org/databases/enzyme/enzclass.txt">expasy</a>.
+ * 
+ * @author dmyersturnbull
+ */
 public class ECTreeFactory {
 
-	public static final File DEFAULT_FILE = new File("src/main/resources/enzclass.txt");
+	private static final File FILE_2013_07_24 = new File("src/main/resources/enzclass_2013-07-24.txt");
 
 	private static String REGEX = "^(\\d+)(?:\\.\\s*)?(\\d+)?(?:\\.\\s*)?(\\d+)?(?:[\\s\\.-]*)(?<desc>[A-Za-z]+.*)$";
 
@@ -40,10 +49,13 @@ public class ECTreeFactory {
 		}
 	}
 
-	public static ECTree fromSibFile() throws IOException {
-		return fromSibFile(DEFAULT_FILE);
-	}
-
+	/**
+	 * Creates a new {@link ECTree} from a text file like those provided by the
+	 * ENZYME nomenclature database at the <a
+	 * href="http://www.isb-sib.ch/">Swiss Institute of Bioinformatics
+	 * (SIB)</a>. An example of the format can be found at <a
+	 * href="ftp://ftp.expasy.org/databases/enzyme/enzclass.txt">expasy</a>.
+	 */
 	public static ECTree fromSibFile(BufferedReader br) throws IOException {
 		Pattern pattern = Pattern.compile(REGEX);
 		ECTree tree = new ECTree();
@@ -77,19 +89,60 @@ public class ECTreeFactory {
 			}
 		}
 		for (ECNode node : sorted) {
-			tree.add(node);
+			tree.addFast(node);
 		}
 		return tree;
 	}
 
+	/**
+	 * Creates a new {@link ECTree} from a text file like those provided by the
+	 * ENZYME nomenclature database at the <a
+	 * href="http://www.isb-sib.ch/">Swiss Institute of Bioinformatics
+	 * (SIB)</a>. An example of the format can be found at <a
+	 * href="ftp://ftp.expasy.org/databases/enzyme/enzclass.txt">expasy</a>.
+	 */
 	public static ECTree fromSibFile(File file) throws IOException {
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			return fromSibFile(br);
 		}
 	}
 
-	public static void main(String[] args) {
+	/**
+	 * Creates a new {@link ECTree} from the text file in
+	 * {@code src/main/resources/enzclass_2013-07-24.txt}.
+	 */
+	public static ECTree fromSibFile_2013_07_24() throws IOException {
+		return fromSibFile(FILE_2013_07_24);
+	}
 
+	/**
+	 * <p>
+	 * Creates a new {@link ECTree} from a recent version. Note that the
+	 * particular tree this method returns is <strong>subject to
+	 * change</strong> as the author(s) of the ECTree project try to keep it
+	 * up-to-date. If this is not desirable, please see
+	 * {@link #fromSibFile_2013_07_24()}.
+	 * </p>
+	 * <p>
+	 * <strong>Good uses</strong> of this method:
+	 * <ul>
+	 * <li>A general-use end-user program where in a non-critical convenience
+	 * feature</li>
+	 * <li>Any case where the functionality is non-critical and changes do not
+	 * introduce problems</li>
+	 * </ul>
+	 * <strong>Bad uses</strong> of this method:
+	 * <ul>
+	 * <li>Any type of global research or analysis where this is being used more
+	 * than once, and where this project can be updated (for example, not
+	 * packaged in a Jar that is never updated)</li>
+	 * <li>Any other case where a change in this method's behavior will cause an
+	 * erroneous result</li>
+	 * </ul>
+	 * </p>
+	 */
+	public static ECTree recentVersion() throws IOException {
+		return fromSibFile(FILE_2013_07_24);
 	}
 
 }

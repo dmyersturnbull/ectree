@@ -18,9 +18,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NavigableSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +35,7 @@ public class IntegrationTest {
 
 	@Before
 	public void setUp() throws IOException {
-		tree = ECTreeFactory.fromSibFile();
+		tree = ECTreeFactory.fromSibFile_2013_07_24();
 	}
 
 	@Test
@@ -65,7 +69,8 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void testListOrder() throws IOException {
+	public void testInOrder() throws IOException {
+		tree.print();
 		int length = 0;
 		ECNumber previous = null;
 		for (ECNode node : tree) {
@@ -90,18 +95,54 @@ public class IntegrationTest {
 	}
 
 	@Test
+	public void testInOrderIdentical() throws IOException {
+		StringBuilder expected = new StringBuilder();
+		try (BufferedReader br = new BufferedReader(new FileReader("src/test/resources/expected_in_order.txt"))) {
+			String line = "";
+			while ((line = br.readLine()) != null)
+				expected.append(line);
+		}
+		StringBuilder actual = new StringBuilder();
+		for (ECNode node : tree) {
+			if (!node.isRoot()) {
+				for (int i = 1; i < node.getDepth(); i++)
+					actual.append("\t");
+				actual.append(node);
+			}
+		}
+		assertEquals("Wrong in-order output", expected.toString(), actual.toString());
+	}
+
+	@Test
 	public void testOfDepth() {
-		NavigableSet<ECNode> nodes = tree.findNodesOfDepth(2);
-		assertEquals("Wrong number", 67, nodes.size());
+		NavigableSet<ECNode> roots = tree.findNodesOfDepth(0);
+		assertEquals("Wrong number", 1, roots.size());
+		NavigableSet<ECNode> topLevel = tree.findNodesOfDepth(1);
+		assertEquals("Wrong number", 6, topLevel.size());
+		for (ECNode node : topLevel)
+			assertEquals("Wrong depth", node.getDepth(), 1);
+		NavigableSet<ECNode> midLevel = tree.findNodesOfDepth(2);
+		assertEquals("Wrong number", 67, midLevel.size());
+		for (ECNode node : midLevel)
+			assertEquals("Wrong depth", node.getDepth(), 2);
+		NavigableSet<ECNode> lowerLevel = tree.findNodesOfDepth(3);
+		assertEquals("Wrong number", 260, lowerLevel.size());
+		for (ECNode node : lowerLevel)
+			assertEquals("Wrong depth", node.getDepth(), 3);
 	}
 
 	@Test
 	public void testSubstringSearch() throws IOException {
 		NavigableSet<ECNode> nodes = tree.findByDescriptionSubstring("sulfur");
-		assertEquals("Wrong size", 21, nodes.size());
+		String[] ecArray = new String[] { "1.2.7", "1.3.7", "1.4.7", "1.5.7", "1.7.7", "1.8.7", "1.8", "1.12.7",
+				"1.14.15", "1.17.7", "1.18", "2.8", "3.10.1", "3.10", "3.12.1", "3.12", "3.13.1", "3.13", "4.4.1",
+				"4.4", "6.2" };
+		assertEquals("Wrong size", ecArray.length, nodes.size());
+		Set<String> ecs = new HashSet<String>();
+		for (String ec : ecArray)
+			ecs.add(ec);
 		for (ECNode node : nodes) {
-			if (node.getEcNumber().toString().equals("1.3.7")) return;
+			assertTrue("Extra node " + node.getEcNumber(), ecs.contains(node.getEcNumber().toString()));
 		}
-		fail("Didn't find 1.3.7");
 	}
 }
