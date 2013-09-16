@@ -1,9 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>org.ectree</groupId>
 	<artifactId>ECTree</artifactId>
 	<version>1.0.0</version>
+	
 	<name>ECTree</name>
+	<description>A simple Java API that provides a tree structure for Enzyme Commission (EC) numbers and the relationships between them.</description>
+	<url>https://github.com/dmyersturnbull/ectree</url>
+
 	<properties>
 		<maven.build.timestamp.format>yyyy-MM-dd_HHmm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
@@ -11,86 +17,53 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.7</jdk.version>
 	</properties>
-	<repositories>
-		<repository>
-			<id>com.springsource.repository.bundles.release</id>
-			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/release</url>
-		</repository>
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.0-beta7</version>
-		</dependency>
-	</dependencies>
+	
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<id>dmyersturnbull</id>
+			<name>Douglas Myers-Turnbull</name>
+			<email>dmyersturnbull@gmail.com</email>
+		</developer>
+	</developers>
+  
 	<scm>
 		<developerConnection>https://github.com/dmyersturnbull/ectree</developerConnection>
 		<connection>git://github.com/dmyersturnbull/ectree.git</connection>
 		<url>https://github.com/dmyersturnbull/ectree</url>
 	</scm>
+	
 	<issueManagement>
 		<url>https://github.com/dmyersturnbull/ectree/issues</url>
 		<system>Github</system>
 	</issueManagement>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>[4.0,)</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
 				<configuration>
-					<fork>true</fork>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
-					<maxmem>2000m</maxmem>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.14.1</version>
-				<configuration>
-					<argLine>-Xms256m -Xmx2000M</argLine>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-				<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-				</includes>
-			</resource>
-		</resources>
 	</build>
+	
 </project>
