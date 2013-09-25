@@ -12,7 +12,7 @@
  * 
  * @author dmyersturnbull
  */
-package org.ectree;
+package com.dmyersturnbull.ectree;
 
 import java.io.BufferedReader;
 import java.io.File;

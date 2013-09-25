@@ -29,6 +29,11 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.dmyersturnbull.ectree.ECNode;
+import com.dmyersturnbull.ectree.ECNumber;
+import com.dmyersturnbull.ectree.ECTree;
+import com.dmyersturnbull.ectree.ECTreeFactory;
+
 public class IntegrationTest {
 
 	private ECTree tree;
